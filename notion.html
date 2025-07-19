@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { 
+            height: 350px; 
+            overflow-y: auto; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .compact-dashboard {
+            padding: 15px;
+        }
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-mini {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .alerts-compact {
+            background: #fed7d7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .open-full {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="compact-dashboard">
+        <div class="quick-stats">
+            <div class="stat-mini">👥<br><strong>12</strong><br>Total</div>
+            <div class="stat-mini">🔴<br><strong>3</strong><br>Sin Contactar</div>
+            <div class="stat-mini">🟡<br><strong>5</strong><br>Doc Pendiente</div>
+            <div class="stat-mini">🟢<br><strong>2</strong><br>Inscritos</div>
+        </div>
+        
+        <div class="alerts-compact">
+            🚨 <strong>3 alertas críticas</strong><br>
+            • 2 candidatos sin contactar >2 días<br>
+            • 1 DARDE próximo a vencer
+        </div>
+        
+        <button class="open-full" onclick="window.open('https://vinipurtan.github.io/crm-dashboard-avanza/', '_blank')">
+            🚀 ABRIR DASHBOARD COMPLETO
+        </button>
+    </div>
+</body>
+</html>
