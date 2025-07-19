@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard CRM Avanza Formación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            line-height: 1.6;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .alerts-section {
+            margin-bottom: 30px;
+        }
+
+        .alerts-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .alert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .alert-urgente { border-left-color: #e53e3e; background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%); }
+        .alert-seguimiento { border-left-color: #ff8c00; background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%); }
+        .alert-documentos { border-left-color: #ecc94b; background: linear-gradient(135deg, #fefcbf 0%, #f6e05e 100%); }
+        .alert-darde { border-left-color: #e53e3e; background: linear-gradient(135deg, #fed7d7 0%, #fc8181 100%); }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-emoji {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .alert-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .alert-description {
+            color: #4a5568;
+            font-size: 0.95em;
+        }
+
+        .alert-action {
+            background: rgba(255,255,255,0.8);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2d3748;
+            transition: all 0.2s ease;
+        }
+
+        .alert-action:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+            border-top: 4px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-total { border-top-color: #4299e1; }
+        .stat-urgente { border-top-color: #e53e3e; }
+        .stat-documentos { border-top-color: #ecc94b; }
+        .stat-inscritos { border-top-color: #48bb78; }
+
+        .stat-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filters-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .filters-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .candidates-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .candidates-header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .candidate-card {
+            padding: 25px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        .candidate-card:hover {
+            background: #f7fafc;
+        }
+
+        .candidate-card:last-child {
+            border-bottom: none;
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .candidate-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .candidate-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-inscrito { background: #c6f6d5; color: #22543d; }
+        .badge-doc-pendiente { background: #fefcbf; color: #744210; }
+        .badge-contactado { background: #fbd38d; color: #9c4221; }
+        .badge-sin-contactar { background: #fed7d7; color: #742a2a; }
+        .badge-lista-espera { background: #e9d8fd; color: #553c9a; }
+        .badge-rechazado { background: #e2e8f0; color: #4a5568; }
+
+        .candidate-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 0.95em;
+        }
+
+        .progress-section {
+            margin-bottom: 15px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .progress-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-100 { background: #48bb78; }
+        .progress-75 { background: #ecc94b; }
+        .progress-50 { background: #ed8936; }
+        .progress-25 { background: #e53e3e; }
+        .progress-0 { background: #a0aec0; }
+
+        .documents-grid {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .doc-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+
+        .candidate-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85em;
+            color: #718096;
+            margin-top: 15px;
+        }
+
+        .candidate-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view { background: #4299e1; color: white; }
+        .btn-call { background: #48bb78; color: white; }
+        .btn-docs { background: #ecc94b; color: #744210; }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notion-embed {
+            border: none;
+            width: 100%;
+            min-height: 500px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                flex-direction: column;
+            }
+            
+            .candidate-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .candidate-actions {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <button class="refresh-btn" onclick="refreshData()">🔄 Actualizar</button>
+            <h1>🚀 Dashboard CRM Avanza</h1>
+            <p>📊 Gestión Operativa de Candidatos - LABORA & SEFCARM</p>
+        </div>
+
+        <!-- Alertas Críticas -->
+        <div class="alerts-section">
+            <div class="alerts-title">
+                🚨 Alertas Críticas
+            </div>
+            <div id="alertsContainer">
+                <!-- Las alertas se cargarán aquí -->
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card stat-total">
+                <div class="stat-emoji">👥</div>
+                <div class="stat-number" id="statTotal">12</div>
+                <div class="stat-label">Total Candidatos</div>
+            </div>
+            <div class="stat-card stat-urgente">
+                <div class="stat-emoji">🔴</div>
+                <div class="stat-number" id="statUrgente">3</div>
+                <div class="stat-label">Sin Contactar</div>
+            </div>
+            <div class="stat-card stat-documentos">
+                <div class="stat-emoji">🟡</div>
+                <div class="stat-number" id="statDocumentos">5</div>
+                <div class="stat-label">Doc Pendiente</div>
+            </div>
+            <div class="stat-card stat-inscritos">
+                <div class="stat-emoji">🟢</div>
+                <div class="stat-number" id="statInscritos">2</div>
+                <div class="stat-label">Inscritos</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-section">
+            <div class="filters-title">🔍 Filtros Rápidos</div>
+            <div class="filters-grid">
+                <button class="filter-btn active" data-filter="all">Todos (12)</button>
+                <button class="filter-btn" data-filter="urgente">🚨 Urgente (5)</button>
+                <button class="filter-btn" data-filter="sin-contactar">🔴 Sin Contactar (3)</button>
+                <button class="filter-btn" data-filter="doc-pendiente">🟡 Doc Pendiente (5)</button>
+                <button class="filter-btn" data-filter="seguimiento">🟠 Seguimiento (2)</button>
+                <button class="filter-btn" data-filter="inscritos">🟢 Inscritos (2)</button>
+            </div>
+        </div>
+
+        <!-- Lista de Candidatos -->
+        <div class="candidates-section">
+            <div class="candidates-header">
+                👥 Candidatos Activos
+            </div>
+            <div id="candidatesContainer">
+                <!-- Los candidatos se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo del CRM
+        const candidatosData = [
+            {
+                id: "1",
+                nombre: "María José",
+                apellidos: "González Martínez",
+                email: "maria.gonzalez@email.com",
+                telefono: "600123456",
+                municipio: "Valencia",
+                delegacion: "LABORA",
+                estado: "SIN CONTACTAR",
+                fechaCreacion: "2025-01-17",
+                diasSinContacto: 3,
+                documentos: {
+                    dni: false,
+                    darde: false,
+                    estudios: false,
+                    progreso: 0
+                },
+                dardeVencimiento: null,
+                prioridad: "Alta"
+            },
+            {
+                id: "2", 
+                nombre: "José Antonio",
+                apellidos: "Ruiz López",
+                email: "jose.ruiz@email.com",
+                telefono: "600987654",
+                municipio: "Murcia",
+                delegacion: "SEFCARM",
+                estado: "DOC PENDIENTE",
+                fechaCreacion: "2025-01-15",
+                diasSinContacto: 1,
+                documentos: {
+                    dni: true,
+                    darde: true,
+                    estudios: false,
+                    progreso: 75
+                },
+                dardeVencimiento: "2025-02-15",
+                prioridad: "Media"
+            },
+            {
+                id: "3",
+                nombre: "Ana Belén",
+                apellidos: "Martín Sánchez", 
+                email: "ana.martin@email.com",
+                telefono: "600555777",
+                municipio: "Cartagena",
+                delegacion: "SEFCARM",
+                estado: "CONTACTADO",
+                fechaCreacion: "2025-01-10",
+                diasSinContacto: 8,
+                documentos: {
+                    dni: true,
+                    darde: true,
+                    estudios: true,
+                    progreso: 100
+                },
+                dardeVencimiento: "2025-01-25",
+                prioridad: "Alta"
+            },
+            {
+                id: "4",
+                nombre: "Francisco Javier",
+                apellidos: "Hernández García",
+                email: "fj.hernandez@email.com", 
+                telefono: "600444333",
+                municipio: "Castellón de la Plana",
+                delegacion: "LABORA",
+                estado: "INSCRITO",
+                fechaCreacion: "2025-01-08",
+                diasSinContacto: 0,
+                documentos: {
+                    dni: true,
+                    darde: true,
+                    estudios: true,
+                    progreso: 100
+                },
+                dardeVencimiento: "2025-06-15",
+                prioridad: "Baja"
+            },
+            {
+                id: "5",
+                nombre: "Carmen",
+                apellidos: "López Fernández",
+                email: "carmen.lopez@email.com",
+                telefono: "600222111", 
+                municipio: "Gandía",
+                delegacion: "LABORA",
+                estado: "LISTA ESPERA",
+                fechaCreacion: "2025-01-12",
+                diasSinContacto: 2,
+                documentos: {
+                    dni: true,
+                    darde: false,
+                    estudios: true,
+                    progreso: 50
+                },
+                dardeVencimiento: null,
+                prioridad: "Media"
+            }
+        ];
+
+        let filtroActivo = 'all';
+
+        // Funciones de utilidad
+        function getEstadoBadge(estado) {
+            const badges = {
+                "INSCRITO": "badge-inscrito",
+                "DOC PENDIENTE": "badge-doc-pendiente",
+                "CONTACTADO": "badge-contactado",
+                "SIN CONTACTAR": "badge-sin-contactar",
+                "LISTA ESPERA": "badge-lista-espera",
+                "RECHAZADO": "badge-rechazado"
+            };
+            return badges[estado] || "badge-rechazado";
+        }
+
+        function getProgresoInfo(progreso) {
+            if (progreso >= 75) return { 
+                clase: "progress-75", 
+                label: "⚠️ FALTA ESTUDIOS",
+                statusClass: "progress-status",
+                style: "background: #fefcbf; color: #744210;"
+            };
+            if (progreso >= 50) return { 
+                clase: "progress-50", 
+                label: "🟡 FALTAN 2 DOCS",
+                statusClass: "progress-status",
+                style: "background: #fbd38d; color: #9c4221;"
+            };
+            if (progreso >= 25) return { 
+                clase: "progress-25", 
+                label: "🔴 FALTAN 3 DOCS",
+                statusClass: "progress-status",
+                style: "background: #fed7d7; color: #742a2a;"
+            };
+            return { 
+                clase: "progress-0", 
+                label: "❌ SIN DOCUMENTOS",
+                statusClass: "progress-status",
+                style: "background: #e2e8f0; color: #4a5568;"
+            };
+        }
+
+        function getAlerta(candidate) {
+            const hoy = new Date();
+            
+            // DARDE caducado
+            if (candidate.dardeVencimiento) {
+                const vencimiento = new Date(candidate.dardeVencimiento);
+                const diasParaVencer = Math.ceil((vencimiento - hoy) / (1000 * 60 * 60 * 24));
+                
+                if (diasParaVencer < 0) {
+                    return { 
+                        tipo: "DARDE CADUCADO", 
+                        emoji: "❌", 
+                        clase: "alert-darde",
+                        prioridad: 1,
+                        descripcion: `${candidate.nombre} ${candidate.apellidos} - ${candidate.municipio}`
+                    };
+                }
+                if (diasParaVencer <= 30) {
+                    return { 
+                        tipo: "DARDE CADUCA", 
+                        emoji: "🚨", 
+                        clase: "alert-darde",
+                        prioridad: 2,
+                        descripcion: `${candidate.nombre} ${candidate.apellidos} - Vence en ${diasParaVencer} días`
+                    };
+                }
+            }
+
+            // Contactar urgente
+            if (candidate.estado === "SIN CONTACTAR" && candidate.diasSinContacto > 2) {
+                return { 
+                    tipo: "CONTACTAR URGENTE", 
+                    emoji: "🚨", 
+                    clase: "alert-urgente",
+                    prioridad: 1,
+                    descripcion: `${candidate.nombre} ${candidate.apellidos} - ${candidate.diasSinContacto} días sin contacto`
+                };
+            }
+
+            // Seguimiento retrasado
+            if (candidate.estado === "CONTACTADO" && candidate.diasSinContacto > 7) {
+                return { 
+                    tipo: "SEGUIMIENTO RETRASADO", 
+                    emoji: "⏰", 
+                    clase: "alert-seguimiento",
+                    prioridad: 2,
+                    descripcion: `${candidate.nombre} ${candidate.apellidos} - ${candidate.diasSinContacto} días sin seguimiento`
+                };
+            }
+
+            // Documentación atrasada
+            if (candidate.estado === "DOC PENDIENTE" && candidate.diasSinContacto > 5) {
+                return { 
+                    tipo: "DOCUMENTACIÓN ATRASADA", 
+                    emoji: "📋", 
+                    clase: "alert-documentos",
+                    prioridad: 3,
+                    descripcion: `${candidate.nombre} ${candidate.apellidos} - Documentos pendientes ${candidate.diasSinContacto} días`
+                };
+            }
+
+            return null;
+        }
+
+        function renderAlertas() {
+            const alertas = candidatosData
+                .map(candidate => {
+                    const alerta = getAlerta(candidate);
+                    if (alerta) {
+                        return { ...alerta, candidate };
+                    }
+                    return null;
+                })
+                .filter(alerta => alerta !== null)
+                .sort((a, b) => a.prioridad - b.prioridad);
+
+            const container = document.getElementById('alertsContainer');
+            
+            if (alertas.length === 0) {
+                container.innerHTML = `
+                    <div class="alert-card" style="background: #c6f6d5; border-left-color: #48bb78;">
+                        <span class="alert-emoji">✅</span>
+                        <div class="alert-content">
+                            <div class="alert-title">¡Todo bajo control!</div>
+                            <div class="alert-description">No hay alertas críticas en este momento</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = alertas.slice(0, 5).map(alerta => `
+                <div class="alert-card ${alerta.clase}">
+                    <span class="alert-emoji">${alerta.emoji}</span>
+                    <div class="alert-content">
+                        <div class="alert-title">${alerta.tipo}</div>
+                        <div class="alert-description">${alerta.descripcion}</div>
+                    </div>
+                    <button class="alert-action" onclick="verCandidato('${alerta.candidate.id}')">
+                        Ver Detalles
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderCandidatos(candidatos) {
+            const container = document.getElementById('candidatesContainer');
+            
+            if (candidatos.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🔍</div>
+                        <h3>No hay candidatos que coincidan con el filtro seleccionado</h3>
+                        <p>Intenta cambiar el filtro o actualizar los datos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = candidatos.map(candidate => {
+                const progresoInfo = getProgresoInfo(candidate.documentos.progreso);
+                const alerta = getAlerta(candidate);
+                
+                return `
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div>
+                                <div class="candidate-name">${candidate.nombre} ${candidate.apellidos}</div>
+                                <div class="candidate-badges">
+                                    <span class="badge ${getEstadoBadge(candidate.estado)}">
+                                        ${candidate.estado}
+                                    </span>
+                                    ${alerta ? `<span class="badge" style="background: #fed7d7; color: #742a2a;">${alerta.emoji} ${alerta.tipo}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="candidate-actions">
+                                <button class="action-btn btn-view" onclick="verCandidato('${candidate.id}')">👁️</button>
+                                <button class="action-btn btn-call" onclick="llamarCandidato('${candidate.id}')">📞</button>
+                                <button class="action-btn btn-docs" onclick="gestionarDocs('${candidate.id}')">📋</button>
+                            </div>
+                        </div>
+
+                        <div class="candidate-info">
+                            <div class="info-item">
+                                <span>📧</span> ${candidate.email}
+                            </div>
+                            <div class="info-item">
+                                <span>📞</span> ${candidate.telefono}
+                            </div>
+                            <div class="info-item">
+                                <span>📍</span> ${candidate.municipio} (${candidate.delegacion})
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">📋 Documentación</span>
+                                <span class="progress-status" style="${progresoInfo.style}">
+                                    ${progresoInfo.label}
+                                </span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${progresoInfo.clase}" style="width: ${candidate.documentos.progreso}%"></div>
+                            </div>
+                            <div class="documents-grid">
+                                <div class="doc-status">
+                                    <span>${candidate.documentos.dni ? '✅' : '❌'}</span> DNI
+                                </div>
+                                <div class="doc-status">
+                                    <span>${candidate.documentos.darde ? '✅' : '❌'}</span> DARDE
+                                </div>
+                                <div class="doc-status">
+                                    <span>${candidate.documentos.estudios ? '✅' : '❌'}</span> Estudios
+                                </div>
+                                ${candidate.dardeVencimiento ? `
+                                    <div class="doc-status">
+                                        <span>🗓️</span> Vence: ${candidate.dardeVencimiento}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="candidate-meta">
+                            <span>📅 Creado: ${candidate.fechaCreacion}</span>
+                            <span>⏱️ Sin contacto: ${candidate.diasSinContacto} días</span>
+                            <span>🎯 Prioridad: ${candidate.prioridad}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function aplicarFiltro(filtro) {
+            filtroActivo = filtro;
+            
+            // Actualizar botones
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filtro}"]`).classList.add('active');
+
+            // Filtrar candidatos
+            let candidatosFiltrados = candidatosData;
+            
+            switch(filtro) {
+                case 'urgente':
+                    candidatosFiltrados = candidatosData.filter(c => {
+                        const alerta = getAlerta(c);
+                        return alerta && alerta.prioridad <= 2;
+                    });
+                    break;
+                case 'sin-contactar':
+                    candidatosFiltrados = candidatosData.filter(c => c.estado === 'SIN CONTACTAR');
+                    break;
+                case 'doc-pendiente':
+                    candidatosFiltrados = candidatosData.filter(c => c.estado === 'DOC PENDIENTE');
+                    break;
+                case 'seguimiento':
+                    candidatosFiltrados = candidatosData.filter(c => c.estado === 'CONTACTADO');
+                    break;
+                case 'inscritos':
+                    candidatosFiltrados = candidatosData.filter(c => c.estado === 'INSCRITO');
+                    break;
+                default:
+                    candidatosFiltrados = candidatosData;
+            }
+
+            renderCandidatos(candidatosFiltrados);
+        }
+
+        function actualizarEstadisticas() {
+            const total = candidatosData.length;
+            const sinContactar = candidatosData.filter(c => c.estado === 'SIN CONTACTAR').length;
+            const docPendiente = candidatosData.filter(c => c.estado === 'DOC PENDIENTE').length;
+            const inscritos = candidatosData.filter(c => c.estado === 'INSCRITO').length;
+            const alertas = candidatosData.filter(c => getAlerta(c) !== null).length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statUrgente').textContent = sinContactar;
+            document.getElementById('statDocumentos').textContent = docPendiente;
+            document.getElementById('statInscritos').textContent = inscritos;
+
+            // Actualizar contadores en filtros
+            const filtros = document.querySelectorAll('.filter-btn');
+            filtros.forEach(btn => {
+                const filtro = btn.dataset.filter;
+                let count = total;
+                
+                switch(filtro) {
+                    case 'urgente':
+                        count = alertas;
+                        break;
+                    case 'sin-contactar':
+                        count = sinContactar;
+                        break;
+                    case 'doc-pendiente':
+                        count = docPendiente;
+                        break;
+                    case 'seguimiento':
+                        count = candidatosData.filter(c => c.estado === 'CONTACTADO').length;
+                        break;
+                    case 'inscritos':
+                        count = inscritos;
+                        break;
+                }
+                
+                btn.innerHTML = btn.innerHTML.replace(/\(\d+\)/, `(${count})`);
+            });
+        }
+
+        // Funciones de acción
+        function verCandidato(id) {
+            const candidate = candidatosData.find(c => c.id === id);
+            if (candidate) {
+                // Aquí se abriría la vista detallada del candidato en Notion
+                alert(`Ver detalles de: ${candidate.nombre} ${candidate.apellidos}\n\nEn una implementación real, esto abriría la página del candidato en Notion.`);
+                
+                // En Notion real, podrías hacer:
+                // window.open(`https://www.notion.so/tu-workspace/candidate-${id}`, '_blank');
+            }
+        }
+
+        function llamarCandidato(id) {
+            const candidate = candidatosData.find(c => c.id === id);
+            if (candidate) {
+                // Aquí se iniciaría el proceso de llamada
+                if (confirm(`¿Llamar a ${candidate.nombre} ${candidate.apellidos}?\nTeléfono: ${candidate.telefono}`)) {
+                    // Actualizar estado a "CONTACTADO"
+                    candidate.estado = 'CONTACTADO';
+                    candidate.diasSinContacto = 0;
+                    
+                    // Refrescar vista
+                    renderAlertas();
+                    aplicarFiltro(filtroActivo);
+                    actualizarEstadisticas();
+                    
+                    alert('Llamada registrada. Estado actualizado a "CONTACTADO".');
+                }
+            }
+        }
+
+        function gestionarDocs(id) {
+            const candidate = candidatosData.find(c => c.id === id);
+            if (candidate) {
+                // Aquí se abriría la gestión de documentos
+                alert(`Gestionar documentos de: ${candidate.nombre} ${candidate.apellidos}\n\nDocumentación actual:\n- DNI: ${candidate.documentos.dni ? 'Recibido' : 'Pendiente'}\n- DARDE: ${candidate.documentos.darde ? 'Recibido' : 'Pendiente'}\n- Estudios: ${candidate.documentos.estudios ? 'Recibido' : 'Pendiente'}\n\nProgreso: ${candidate.documentos.progreso}%`);
+                
+                // En Notion real, esto abriría una página de gestión de documentos
+            }
+        }
+
+        function refreshData() {
+            // Mostrar indicador de carga
+            const btn = document.querySelector('.refresh-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Actualizando...';
+            btn.disabled = true;
+
+            // Simular carga de datos desde Notion
+            setTimeout(() => {
+                // En implementación real, aquí harías la llamada a la API de Notion
+                renderAlertas();
+                aplicarFiltro(filtroActivo);
+                actualizarEstadisticas();
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                // Mostrar confirmación
+                const header = document.querySelector('.header p');
+                const originalHeaderText = header.innerHTML;
+                header.innerHTML = '✅ Datos actualizados correctamente';
+                header.style.color = '#48bb78';
+                
+                setTimeout(() => {
+                    header.innerHTML = originalHeaderText;
+                    header.style.color = '';
+                }, 3000);
+            }, 1500);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar filtros
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    aplicarFiltro(this.dataset.filter);
+                });
+            });
+
+            // Inicializar vista
+            renderAlertas();
+            renderCandidatos(candidatosData);
+            actualizarEstadisticas();
+        });
+
+        // Función para conectar con Notion API (para implementación real)
+        async function conectarNotionAPI() {
+            const TOKEN = "ntn_r604595300474rKE1mbXBmb3t1I5tSgaY6mCnThfkZAbEL";
+            const DATABASE_ID = "2331685debec80b6a9f1ce7ccaf0a88c";
+            
+            try {
+                const response = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${TOKEN}`,
+                        'Content-Type': 'application/json',
+                        'Notion-Version': '2022-06-28'
+                    },
+                    body: JSON.stringify({
+                        page_size: 100
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Procesar datos reales de Notion
+                    return procesarDatosNotion(data.results);
+                } else {
+                    console.error('Error al conectar con Notion:', response.statusText);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                return null;
+            }
+        }
+
+        function procesarDatosNotion(notionResults) {
+            return notionResults.map(page => {
+                const props = page.properties;
+                
+                return {
+                    id: page.id,
+                    nombre: props.Nombre?.title?.[0]?.text?.content || '',
+                    apellidos: `${props['Primer Apellido']?.rich_text?.[0]?.text?.content || ''} ${props['Segundo Apellido']?.rich_text?.[0]?.text?.content || ''}`.trim(),
+                    email: props.Email?.email || '',
+                    telefono: props.Teléfono?.phone_number || '',
+                    municipio: props.Municipio?.select?.name || '',
+                    delegacion: props.Delegación?.select?.name || '',
+                    estado: props.Estado?.select?.name || '',
+                    fechaCreacion: page.created_time?.split('T')[0] || '',
+                    diasSinContacto: calcularDiasSinContacto(props['Fecha Último Contacto']?.date?.start, page.created_time),
+                    documentos: {
+                        dni: props['DNI Recibido']?.checkbox || false,
+                        darde: props['DARDE Recibido']?.checkbox || false,
+                        estudios: props['Estudios Recibidos']?.checkbox || false,
+                        progreso: calcularProgresoDocumentacion(props)
+                    },
+                    dardeVencimiento: props['DARDE Vencimiento']?.date?.start || null,
+                    prioridad: props.Prioridad?.select?.name || 'Media'
+                };
+            });
+        }
+
+        function calcularDiasSinContacto(fechaUltimoContacto, fechaCreacion) {
+            const fechaReferencia = fechaUltimoContacto || fechaCreacion;
+            const hoy = new Date();
+            const fecha = new Date(fechaReferencia);
+            return Math.floor((hoy - fecha) / (1000 * 60 * 60 * 24));
+        }
+
+        function calcularProgresoDocumentacion(props) {
+            const docs = [
+                props['DNI Recibido']?.checkbox,
+                props['DARDE Recibido']?.checkbox, 
+                props['Estudios Recibidos']?.checkbox
+            ];
+            const completados = docs.filter(doc => doc === true).length;
+            return Math.round((completados / docs.length) * 100);
+        }
+    </script>
+</body>
+</html>
